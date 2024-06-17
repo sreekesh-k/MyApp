@@ -1,5 +1,6 @@
 package com.example.myapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,8 +17,8 @@ import androidx.core.view.WindowInsetsCompat;
 public class MainActivity extends AppCompatActivity {
     private EditText baseAmount;
     private SeekBar seekBarTip;
-    private TextView tipAmount, totalAmount, tipPercentage;
-    private final int DEFAULT_TIP_VALUE = 10;
+    private TextView tipAmount, totalAmount, tipPercentage,tipDesc;
+    private final int DEFAULT_TIP_VALUE = 15;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,14 +29,17 @@ public class MainActivity extends AppCompatActivity {
         tipAmount = findViewById(R.id.tipAmount);
         totalAmount = findViewById(R.id.totalAmount);
         tipPercentage = findViewById(R.id.tipPercentage);
+        tipDesc = findViewById(R.id.tipDesc);
 
         seekBarTip.setProgress(DEFAULT_TIP_VALUE);
         tipPercentage.setText(DEFAULT_TIP_VALUE+"%");
+        tipDesc.setText("Good");
         seekBarTip.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 tipPercentage.setText(progress+"%");
                 calculateTipAndTotal();
+                updateTipDesc(progress);
             }
 
             @Override
@@ -81,5 +85,29 @@ public class MainActivity extends AppCompatActivity {
 
         tipAmount.setText(String.format("%.2f", tipValue));
         totalAmount.setText(String.format("%.2f", totalValue));
+    }
+    private void updateTipDesc(int progress){
+        String msg = "";
+        int color = Color.GREEN; // Default color
+
+        if (progress >= 0 && progress < 10) {
+            msg = "Poor";
+            color = Color.RED;
+        } else if (progress >= 10 && progress < 15) {
+            msg = "Acceptable";
+            color = Color.parseColor("#a86f32"); //Orange
+        } else if (progress >= 15 && progress < 20) {
+            msg = "Good";
+            color = Color.GREEN;
+        } else if (progress >= 20 && progress < 25) {
+            msg = "Great";
+            color = Color.parseColor("#32CD32"); // Light green
+        } else if (progress >= 25 && progress <= 30) {
+            msg = "Amazing";
+            color = Color.parseColor("#48cf36"); // Light green
+        }
+
+        tipDesc.setText(msg);
+        tipDesc.setTextColor(color);
     }
 }
